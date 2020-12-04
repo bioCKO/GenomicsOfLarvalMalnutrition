@@ -9,6 +9,7 @@ We closely followed the bioinformatics pipeline of the data analyses in Kapun *e
 
 We closely followed the bioinformatics pipeline of the data analyses in Kapun *et al.* 2020 [(doi://10.1093/molbev/msaa120)](https://doi.org/10.1093/molbev/msaa120). See the [documentation](https://github.com/capoony/DrosEU_pipeline/blob/master/README.md) of the DrosEU bioinformatics pipeline and [documentation](https://github.com/capoony/PoolSNP/blob/master/README.md) of PoolSNP for details. Commands that differ from the standard pipeline and additional scripts are listed below.
 
+### 1) SNP calling
 ```bash
 sh /GitHub/PoolSNP/PoolSNP.sh  \
 mpileup=Input.mpileup.gz \
@@ -23,7 +24,16 @@ jobs=22 \
 badsites \
 base-quality=15 \
 output=SNPdata
+
 ```
+### 2) annotation with SNPeff
+
+See the [documentation](https://github.com/capoony/DrosEU_pipeline/blob/master/README.md) of the DrosEU bioinformatics pipeline for more details
+
+### 3) Conversion to sync file format
+
+After annotating the SNPs in VCF file format, we converted the VCF to the SYNC file format. See the [documentation](https://github.com/capoony/DrosEU_pipeline/blob/master/README.md) of the DrosEU bioinformatics pipeline for more details
+
 
 ## C) Calculation of unbiased population genetics estimators Tajima's *pi*, Watterson's *Theta* and Tajima's *D*
 
@@ -67,7 +77,7 @@ gunzip -c SNPdata-30x.sync.gz  \
 | gzip > SNPdata-30x.fet.gz
 ```
 
-### 4) calculate empirical false discovery rate
+### 4) calculate empirical false discovery rate and identify candidates with *q*-value <=0.05
 
 The method is based on the approach in Jha *et al.* (2015) [(doi://10.1093/molbev/msv248)](https://doi.org/10.1093/molbev/msv248).
 
@@ -77,6 +87,8 @@ python2.7 /scripts/FDR-rank.py \
 --true -6 \
 --permuted -2,-3,-4,-5 \
 --output SNPdata.glmm.fdr.gz
+
+awk '$4<=0.05' SNPdata.glmm.fdr.gz > SNPdata_cand005.glmm.fdr.gz
 ```
 
 ```bash
@@ -85,8 +97,15 @@ python2.7 /scripts/FDR-rank.py \
 --true -6 \
 --permuted -2,-3,-4,-5 \
 --output SNPdata.fet.fdr.gz
+
+awk '$4<=0.05' SNPdata.fet.fdr.gz > SNPdata_cand005.fet.fdr.gz
 ```
 
-### 5) annotate SNPS with SNPeff
+### 5) calculate allele frequencies of the allele at higher frequencies in the selected populations
 
-See the [documentation](https://github.com/capoony/DrosEU_pipeline/blob/master/README.md) of the DrosEU bioinformatics pipeline for more details
+```bash
+python2.7 /scripts/AFbyAllele.py \
+--input SNPdata.sync.gz \
+| gzip > SNPdata.af.gz
+
+```
