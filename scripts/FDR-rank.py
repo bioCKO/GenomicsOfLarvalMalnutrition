@@ -116,7 +116,7 @@ for l in load_data(data):
     if q>1:
         q=1
     #out.write(l.rstrip()+"\t"+str(R)+"\t"+str(q)+"\n")
-    out.write(a[0]+"\t"+a[1]+"\t"+a[true]+"\t"+str(q)+"\tgene"+a[0]+a[1]+"\n")
+    out.write(a[0]+"\t"+a[1]+"\t"+a[true]+"\t"+str(q)+"\n")
 
 # r('png("'+sys.argv[4]+'.png",width=1000,height=500)')
 # r.assign("pvalT",robjects.vectors.FloatVector(TRUES))

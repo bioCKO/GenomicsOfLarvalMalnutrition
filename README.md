@@ -1,5 +1,5 @@
-# Bioinformatics pipeline of Kawecki et al. 2021
-The bioinformatics pipeline for the generation and analyses of genomics data in Kawecki et al. 2021.
+# Bioinformatics pipeline of Kawecki *et al.* 2020. [(doi://10.1101/2020.12.01.4066860)](https://doi.org/10.1101/2020.12.01.406686)
+The bioinformatics pipeline for the generation and analyses of genomics data in Kawecki *et al.* 2020. [(doi://10.1101/2020.12.01.406686)](https://doi.org/10.1101/2020.12.01.406686)
 
 ## A) trim, map and re-align around InDels
 
