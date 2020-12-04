@@ -16,7 +16,7 @@ Calculate allele frequencies of the alleles more common in the selected populati
 """)
 #########################################################   CODE   #########################################################################
 
-parser.add_option("--input", dest="input", help="input file with true and permuted P-values")
+parser.add_option("--input", dest="input", help="input SYNC file")
 
 (options, args) = parser.parse_args()
 parser.add_option_group(group)

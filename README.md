@@ -101,7 +101,7 @@ python2.7 /scripts/FDR-rank.py \
 awk '$4<=0.05' SNPdata.fet.fdr.gz > SNPdata_cand005.fet.fdr.gz
 ```
 
-### 5) calculate allele frequencies of the allele at higher frequencies in the selected populations
+### 5) calculate frequencies of the allele at higher frequencies in the selected populations
 
 ```bash
 python2.7 /scripts/AFbyAllele.py \
@@ -109,3 +109,28 @@ python2.7 /scripts/AFbyAllele.py \
 | gzip > SNPdata.af.gz
 
 ```
+
+### 5) further select candidates with an absolute average allele frequency difference (AFD) between selected and controls >= 0.3
+
+```bash
+python /GitHub/DrosEU_pipeline/scripts/OverlapSNPs.py \
+--source SNPdata_cand005.glmm.fdr.gz \
+--target SNPdata.af.gz \
+| awk '{C=$(NF-11)+$(NF-10)+$(NF-9)+$(NF-8)+$(NF-7)+$(NF-6); S=$(NF-6)+$(NF-5)+$(NF-4)+$(NF-3)+$(NF-2)+$(NF-1)+$(NF); if(sqrt((S/6-C/6)^2)>=0.3){print}}' \
+> SNPdata_cand005_AFD03.fdr.glmm
+```
+
+```bash
+python /GitHub/DrosEU_pipeline/scripts/OverlapSNPs.py \
+--source SNPdata_cand005.fet.fdr.gz \
+--target SNPdata.af.gz \
+| awk '{C=$(NF-11)+$(NF-10)+$(NF-9)+$(NF-8)+$(NF-7)+$(NF-6); S=$(NF-6)+$(NF-5)+$(NF-4)+$(NF-3)+$(NF-2)+$(NF-1)+$(NF); if(sqrt((S/6-C/6)^2)>=0.3){print}}' \
+> SNPdata_cand005_AFD03.fdr.fet
+```
+### 6) Merge and define candidates based on allele frequency patterns in "High" and "Mid" frequency candidates (or "ambiguous")
+
+```bash
+python /scripts/CandTypes.py \
+--glmm SNPdata_cand005_AFD03.fdr.glmm \
+--fet SNPdata_cand005_AFD03.fdr.fet \
+> SNPdata_cand005_AFD03.cand
